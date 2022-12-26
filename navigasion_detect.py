@@ -21,7 +21,7 @@ def detect():
     model = Darknet(opt.cfg, imgsz)
 
     # Load weights
-    # model.load_state_dict(torch.load(weights, map_location=device)['model'])
+    model.load_state_dict(torch.load(weights, map_location=device)['model'])
 
     # Eval mode
     model.to(device).eval()
@@ -51,7 +51,7 @@ def detect():
     sample = {'image': im0}
 
 
-    img = trans(**(sample))['image']
+    img = trans(**(sample))['image'].to(device)
     
     print(img.shape)
 
@@ -79,13 +79,8 @@ def detect():
           # Rescale boxes from imgsz to im0 size
           bbox[:, :4] = scale_coords(img.shape[2:], bbox[:, :4], im0.shape).round()
 
-          # Print results
-          for c in bbox[:, -1].unique():
-              n = (bbox[:, -1] == c).sum()  # detections per class
-              s += '%g %ss, ' % (n, names[int(c)])  # add to string
-
           # Write results
-          for *xyxy, conf, cls in pred:
+          for *xyxy, conf, cls in bbox:
             print(('%g ' * 5 + '\n') % (cls, *xyxy))   
 
     # Print time (inference + NMS)
