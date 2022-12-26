@@ -141,3 +141,6 @@ training_tracker.xlsx
 *.h5
 *.pkl
 *.pth
+
+
+outputs
