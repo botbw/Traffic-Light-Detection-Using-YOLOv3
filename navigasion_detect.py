@@ -39,7 +39,7 @@ def detect():
     # Run inference
     t0 = time.time()
     # BGR
-    im0 = cv2.imread('/Users/haoxuanwang/Downloads/test_img/test3.jpeg')
+    im0 = cv2.imread('preview_images/test3.jpeg')
     # RGB
     im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB).astype(np.float32)
     
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     opt.cfg='cfg/yolov3-spp-6cls.cfg'
     opt.names='data/traffic_light.names'
     opt.weights='weights/best_model_12.pt'
-    opt.source='/Users/haoxuanwang/Downloads/test_img'
+    opt.source='preview_images/'
     opt.output='outputs'
     opt.img_size=512
     opt.conf_thres=0.3
