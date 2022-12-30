@@ -32,7 +32,7 @@ def init():
     opt.iou_thres=0.6
     opt.fourcc='mp4v'
     opt.half=False
-    opt.device=''
+    opt.device=torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
     opt.view_img=False
     opt.save_txt=False
     opt.classes=None
@@ -48,7 +48,7 @@ def init():
     weights, half = opt.weights, opt.half
 
     # Initialize device
-    device = torch_utils.select_device(device='cpu' if ONNX_EXPORT else opt.device)
+    device = opt.device
 
     # Initialize model
     model = Darknet(opt.cfg, imgsz)
@@ -80,11 +80,14 @@ def run(raw_data):
     """
     logging.info("Request received")
     data_json = json.loads(raw_data)
-    im0 = np.array(data_json['image'])
+    data_str = data_json['image']
+    data_arr = np.fromstring(data_str, np.uint8)
+    im0 = cv2.imdecode(data_arr, cv2.IMREAD_COLOR)
+    im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB).astype(np.float32)
     with torch.no_grad():
         ans = detect(im0)
     logging.info("Request processed")
-    return ['output for navigasion', np.ndarray.tolist(ans)]
+    return ans
 
 
 
@@ -139,7 +142,7 @@ def detect(im0):
     return ret
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 #     opt = edict()
 #     opt.cfg='cfg/yolov3-spp-6cls.cfg'
 #     opt.names='data/traffic_light.names'
