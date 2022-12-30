@@ -133,6 +133,7 @@ input/
 models/
 outputs/*.mp4
 weights/*.pt
+weights/*.onnx
 commands.txt
 training_tracker.xlsx
 
