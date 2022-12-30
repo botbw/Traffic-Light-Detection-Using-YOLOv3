@@ -200,8 +200,9 @@ def init():
     You can write the logic here to perform init operations like caching the model in memory
     """
     global sess, opt
+    print(os.listdir(os.getenv("AZUREML_MODEL_DIR")))
     model_path = os.path.join(
-        os.getenv("AZUREML_MODEL_DIR"), "model/navigasion_traffic.onnx"
+        os.getenv("AZUREML_MODEL_DIR"), "navigasion_traffic.onnx"
     )
     sess = onnxruntime.InferenceSession(model_path)
 
