@@ -201,7 +201,7 @@ def init():
     """
     global sess, opt
     model_path = os.path.join(
-        os.getenv("AZUREML_MODEL_DIR"), "navigasion_traffic.onnx"
+        os.getenv("AZUREML_MODEL_DIR"), "model/navigasion_traffic.onnx"
     )
     sess = onnxruntime.InferenceSession(model_path)
 
