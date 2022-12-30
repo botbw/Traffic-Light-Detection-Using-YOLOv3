@@ -90,6 +90,8 @@ def detect(save_img=False):
         pred = model(img, augment=opt.augment)[0]
         t2 = torch_utils.time_synchronized()
 
+        print(pred.shape)
+
         # to float
         if half:
             pred = pred.float()

@@ -158,20 +158,23 @@ def detect(im0):
     # Run inference
     t0 = time.time()
     trans = A.Compose([
-                A.Resize(height=512, width=512, p=1.0),
+                A.Resize(height=opt.img_size, width=opt.img_size, p=1.0),
                 # ToTensorV2(p=1.0),
             ], p=1.0)
     sample = {'image': im0}
     img = trans(**(sample))['image']
     img /= 255.0  # 0 - 255 to 0.0 - 1.0
+
+    img = np.transpose(img, (2, 0, 1))
     img = img[None]
 
+    print(img.shape, type(img))
     # Inference
     t1 = time_synchronized()
-    pred = sess.run(['modelOutput'], {'modelInput': img})
+    pred = sess.run(['modelOutput'], {'modelInput': img})[0]
     t2 = time_synchronized()
 
-
+    pred = torch.as_tensor(pred)
     # Apply NMS
     pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres,
                                 multi_label=False, classes=opt.classes, agnostic=opt.agnostic_nms)
@@ -198,7 +201,7 @@ def init():
     """
     global sess, opt
     model_path = os.path.join(
-        os.getenv("AZUREML_MODEL_DIR"), "sklearn_regression_model.pkl"
+        os.getenv("AZUREML_MODEL_DIR"), "navigasion_traffic.onnx"
     )
     sess = onnxruntime.InferenceSession(model_path)
 
@@ -208,7 +211,7 @@ def init():
     # opt.weights='weights/best_model_12.pt'
     # opt.source='preview_images/'
     # opt.output='outputs'
-    # opt.img_size=512
+    opt.img_size=512
     opt.conf_thres=0.3
     opt.iou_thres=0.6
     # opt.fourcc='mp4v'
@@ -216,7 +219,7 @@ def init():
     # opt.device=''
     # opt.view_img=False
     # opt.save_txt=False
-    # opt.classes=None
+    opt.classes=None
     opt.agnostic_nms=False
     # opt.augment=False
 
@@ -243,25 +246,28 @@ def run(raw_data):
 
 
 # if __name__ == '__main__':
-#   input = torch.randn(1, 3, 512, 512)
-#   print(input.shape)  
-#   input_name = sess.get_inputs()[0].name
-#   print("input name", input_name)
-#   input_shape = sess.get_inputs()[0].shape
-#   print("input shape", input_shape)
-#   input_type = sess.get_inputs()[0].type
-#   print("input type", input_type)
-#   print()
-#   output_name = sess.get_outputs()[0].name
-#   print("output name", output_name)
-#   output_shape = sess.get_outputs()[0].shape
-#   print("output shape", output_shape)
-#   output_type = sess.get_outputs()[0].type
-#   print("output type", output_type)
+#   # input = torch.randn(1, 3, 512, 512)
+#   # print(input.shape)  
+#   # input_name = sess.get_inputs()[0].name
+#   # print("input name", input_name)
+#   # input_shape = sess.get_inputs()[0].shape
+#   # print("input shape", input_shape)
+#   # input_type = sess.get_inputs()[0].type
+#   # print("input type", input_type)
+#   # print()
+#   # output_name = sess.get_outputs()[0].name
+#   # print("output name", output_name)
+#   # output_shape = sess.get_outputs()[0].shape
+#   # print("output shape", output_shape)
+#   # output_type = sess.get_outputs()[0].type
+#   # print("output type", output_type)
 
-#   x = np.random.random((1, 3, 512, 512))
-#   x = x.astype(np.float32)
-#   res = sess.run([output_name], {input_name: x})
-#   print(res[0].shape)
-
-#   detect(x)
+#   # x = np.random.random((1, 3, 512, 512))
+#   # x = x.astype(np.float32)
+#   # res = sess.run([output_name], {input_name: x})
+#   # print(res[0].shape)
+#   init()
+#   im0 = cv2.imread('./preview_images/test3.jpeg')
+#   im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB).astype(np.float32)
+#   res = detect(im0)
+#   print(res)

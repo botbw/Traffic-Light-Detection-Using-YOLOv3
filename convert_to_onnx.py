@@ -13,6 +13,8 @@ import json
 
 import torch.onnx 
 
+from onnx import checker
+
 #Function to Convert to ONNX 
 def Convert_ONNX(): 
 
@@ -74,8 +76,10 @@ def init():
     # Load weights
     model.load_state_dict(torch.load(weights, map_location=device)['model'])
 
+    model.eval()
+
 
 if __name__ == '__main__':
   init()
   Convert_ONNX()
-
+  checker.check_model('navigasion_traffic.onnx', True)

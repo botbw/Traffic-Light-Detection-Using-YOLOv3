@@ -513,6 +513,7 @@ def non_max_suppression(prediction, conf_thres=0.1, iou_thres=0.6, multi_label=T
             x = torch.cat((box[i], x[i, j + 5].unsqueeze(1), j.float().unsqueeze(1)), 1)
         else:  # best class only
             conf, j = x[:, 5:].max(1)
+            print(x.shape, conf, j)
             x = torch.cat((box, conf.unsqueeze(1), j.float().unsqueeze(1)), 1)[conf > conf_thres]
 
         # Filter by class
