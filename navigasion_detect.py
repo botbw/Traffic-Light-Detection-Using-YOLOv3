@@ -13,8 +13,6 @@ import os
 import logging
 import json
 import numpy
-import joblib
-
 
 def init():
     """
@@ -91,6 +89,8 @@ def run(raw_data):
 
 
 def detect(im0):
+    global model, opt, device
+
     ret = []
     # Run inference
     t0 = time.time()
@@ -136,9 +136,10 @@ def detect(im0):
 
     # Print time (inference + NMS)
     logging.info('Done. (%.3fs)' % (time.time() - t0))
+    return ret
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 #     opt = edict()
 #     opt.cfg='cfg/yolov3-spp-6cls.cfg'
 #     opt.names='data/traffic_light.names'
@@ -163,3 +164,8 @@ def detect(im0):
 
 #     with torch.no_grad():
 #         detect()
+
+  # init()
+  # im0 = cv2.imread('./preview_images/test3.jpeg')
+  # im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB).astype(np.float32)
+  # print(detect(im0))
