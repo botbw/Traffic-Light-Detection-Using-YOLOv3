@@ -168,7 +168,6 @@ def detect(im0):
     img = np.transpose(img, (2, 0, 1))
     img = img[None]
 
-    print(img.shape, type(img))
     # Inference
     t1 = time_synchronized()
     pred = sess.run(['modelOutput'], {'modelInput': img})[0]
@@ -200,10 +199,10 @@ def init():
     You can write the logic here to perform init operations like caching the model in memory
     """
     global sess, opt
-    print(os.listdir(os.getenv("AZUREML_MODEL_DIR")))
-    model_path = os.path.join(
-        os.getenv("AZUREML_MODEL_DIR"), "navigasion_traffic.onnx"
-    )
+    # model_path = os.path.join(
+    #     os.getenv("AZUREML_MODEL_DIR"), "navigasion_traffic.onnx"
+    # )
+    model_path = '/Users/haoxuanwang/Downloads/navigasion_traffic.onnx'
     sess = onnxruntime.InferenceSession(model_path)
 
     opt = edict()
@@ -268,7 +267,15 @@ def run(raw_data):
 #   # res = sess.run([output_name], {input_name: x})
 #   # print(res[0].shape)
 #   init()
-#   im0 = cv2.imread('./preview_images/test3.jpeg')
-#   im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB).astype(np.float32)
-#   res = detect(im0)
-#   print(res)
+
+#   import matplotlib.pyplot as plt
+#   file_img = open('preview_images/test3.jpeg', 'rb') 
+#   data_str = file_img.read() 
+#   data_arr = np.fromstring(data_str, np.uint8) 
+
+#   data = {"image": str(data_str)}
+#   body = str.encode(json.dumps(data))
+#   # headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key), 'azureml-model-deployment': 'traffic-light' }
+
+#   print(run(body))
+
