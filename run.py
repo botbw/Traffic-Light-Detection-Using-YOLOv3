@@ -234,7 +234,8 @@ def run(raw_data):
     """
     logging.info("Request received")
     data_json = json.loads(raw_data)
-    data_str = data_json['image']
+
+    data_str = bytes.fromhex(data_json['image'])
     data_arr = np.fromstring(data_str, np.uint8)
 
     im0 = cv2.imdecode(data_arr, cv2.IMREAD_COLOR)
@@ -270,7 +271,7 @@ def run(raw_data):
 
 #   import matplotlib.pyplot as plt
 #   file_img = open('preview_images/test3.jpeg', 'rb') 
-#   data_str = file_img.read() 
+#   data_str = file_img.read().hex()
 #   data_arr = np.fromstring(data_str, np.uint8) 
 
 #   data = {"image": str(data_str)}

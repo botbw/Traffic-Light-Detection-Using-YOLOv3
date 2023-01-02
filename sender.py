@@ -20,14 +20,14 @@ allowSelfSignedHttps(True) # this line is needed if you use self-signed certific
 # https://docs.microsoft.com/azure/machine-learning/how-to-deploy-advanced-entry-script
 data = {}
 
+# file_img = open('/Users/haoxuanwang/Downloads/remote_test.jpeg', 'rb') 
 file_img = open('preview_images/test3.jpeg', 'rb') 
-data_str = file_img.read() 
-data_arr = np.fromstring(data_str, np.uint8) 
-im0 = cv2.imdecode(data_arr, cv2.IMREAD_COLOR) 
-im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB) 
 
-plt.imshow(im0) 
-plt.show() 
+data_str = file_img.read().hex() 
+
+data_arr = np.fromstring(bytes.fromhex(data_str), np.uint8) 
+im0 = cv2.imdecode(data_arr, cv2.IMREAD_COLOR)
+im0 = cv2.cvtColor(im0, cv2.COLOR_BGR2RGB) 
 
 data = {"image": str(data_str)} 
 body = str.encode(json.dumps(data))
@@ -48,6 +48,8 @@ try:
     response = urllib.request.urlopen(req)
 
     result = response.read()
+
+    result = json.loads(result)
     print(result)
 except urllib.error.HTTPError as error:
     print("The request failed with status code: " + str(error.code))
